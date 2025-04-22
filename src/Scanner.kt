@@ -4,24 +4,24 @@ import com.craftinginterpreters.lox.TokenType.*
 
 class Scanner(private val source: String) {
     private val tokens = mutableListOf<Token>()
-    private val keywords = mutableMapOf<String, TokenType>().apply() {
-        put("and",    AND)
-        put("class",  CLASS)
-        put("else",   ELSE)
-        put("false",  FALSE)
-        put("for",    FOR)
-        put("fun",    FUN)
-        put("if",     IF)
-        put("nil",    NIL)
-        put("or",     OR)
-        put("print",  PRINT)
-        put("return", RETURN)
-        put("super",  SUPER)
-        put("this",   THIS)
-        put("true",   TRUE)
-        put("var",    VAR)
-        put("while",  WHILE)
-    }
+    private val keywords = mutableMapOf(
+        "and" to AND,
+        "class" to CLASS,
+        "else" to ELSE,
+        "false" to FALSE,
+        "for" to FOR,
+        "fun" to FUN,
+        "if" to IF,
+        "nil" to NIL,
+        "or" to OR,
+        "print" to PRINT,
+        "return" to RETURN,
+        "super" to SUPER,
+        "this" to THIS,
+        "true" to TRUE,
+        "var" to VAR,
+        "while" to WHILE
+    )
 
     private var start: Int = 0
     private var current: Int = 0
