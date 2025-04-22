@@ -3,6 +3,8 @@ package com.craftinginterpreters.lox
 import com.craftinginterpreters.lox.TokenType.*
 
 class Scanner(private val source: String) {
+    private val NULL_CHARACTER = '\u0000'
+
     private val tokens = mutableListOf<Token>()
     private val keywords = mutableMapOf(
         "and" to AND,
@@ -94,7 +96,7 @@ class Scanner(private val source: String) {
         return true
     }
 
-    private fun peek(): Char = if(isAtEnd()) '\u0000' else source[current]
+    private fun peek(): Char = if(isAtEnd()) NULL_CHARACTER else source[current]
 
     private fun advanceUntilEndOfLine() {
         while(peek() != '\n' && !isAtEnd()) advance()
@@ -132,7 +134,7 @@ class Scanner(private val source: String) {
     }
 
     private fun peekNext(): Char {
-        if(current + 1 >= source.length) return '\u0000' else return source[current + 1]
+        if(current + 1 >= source.length) return NULL_CHARACTER else return source[current + 1]
     }
 
     private fun isAlpha(c: Char): Boolean = c in 'a'..'z' || c in 'A'..'Z' || c == '_'
