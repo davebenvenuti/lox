@@ -22,6 +22,6 @@ WORKDIR /lox
 
 COPY ./src/ /lox/
 
-RUN kotlinc *.kt -include-runtime -d lox.jar
+RUN kotlinc lox/*.kt -include-runtime -d lox.jar
 
 CMD ["java", "-jar", "lox.jar"]
