@@ -6,7 +6,8 @@ class Scanner(private val source: String) {
     private val NULL_CHARACTER = '\u0000'
 
     private val tokens = mutableListOf<Token>()
-    private val keywords = mutableMapOf(
+
+    private val keywords = mapOf(
         "and" to AND,
         "class" to CLASS,
         "else" to ELSE,
