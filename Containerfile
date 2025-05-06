@@ -1,4 +1,4 @@
-FROM alpine:3
+FROM alpine:3 AS base
 
 # Inspired by https://github.com/saschpe/docker-kotlin/blob/master/Dockerfile
 
@@ -21,7 +21,16 @@ RUN apk add --no-cache --virtual=.build-dependencies openjdk8 bash wget unzip \
 WORKDIR /lox
 
 COPY ./src/ /lox/
+COPY ./bin /usr/local/bin
 
+ENV PATH $PATH:/usr/local/bin
+
+FROM base as generateAST
+COPY ./src/ /lox/
+RUN kotlinc tool/*.kt -include-runtime -d tool.jar
+CMD ["/usr/local/bin/generate-ast"]
+
+FROM base as lox
+COPY ./src/ /lox/
 RUN kotlinc lox/*.kt -include-runtime -d lox.jar
-
 CMD ["java", "-jar", "lox.jar"]

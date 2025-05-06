@@ -8,17 +8,76 @@ object Lox {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        when {
-            args.size > 1 -> {
-                println("Usage: jlox [script]")
-                System.exit(64)
-            }
-            args.size == 1 -> runFile(args[0])
-            else -> runPrompt()
+        if (args.isEmpty()) {
+            runPrompt()
+
+            return
         }
+
+        // Process arguments
+        var printAst = false
+        var inputFile: String? = null
+
+        var i = 0
+        while (i < args.size) {
+            when (args[i]) {
+                "-h", "--help" -> {
+                    printUsage()
+                    return
+                }
+                "-p", "--print-ast" -> {
+                    printAst = true
+                }
+                else -> {
+                    if (inputFile == null) {
+                        inputFile = args[i]
+                    } else {
+                        println("Unknown argument: ${args[i]}")
+                        printUsage()
+                        return
+                    }
+                }
+            }
+            i++
+        }
+
+        if(printAst) {
+            astPrinter()
+        }
+
+        if (!inputFile.isNullOrEmpty()) {
+            runFile(inputFile)
+        } else {
+            runPrompt()
+        }
+
     }
 
-    fun runPrompt() {
+    private fun printUsage() {
+        println("""
+                Usage: lox [options]
+                Options:
+                  -h, --help     Show this help message
+                  -p, --print-ast  Enable verbose output
+                """.trimIndent())
+    }
+
+    private fun astPrinter() {
+        val expression = Expr.Binary(
+            Expr.Unary(
+                Token(TokenType.MINUS, "-", null, 1),
+                Expr.Literal(123)
+            ),
+            Token(TokenType.STAR, "*", null, 1),
+            Expr.Grouping(
+                Expr.Literal(45.67)
+            )
+        )
+
+        println(AstPrinter().print(expression))
+    }
+
+    private fun runPrompt() {
         while (true) {
             print("> ");
             val line = readlnOrNull() ?: break
@@ -29,7 +88,7 @@ object Lox {
         }
     }
 
-    fun runFile(path: String) {
+    private fun runFile(path: String) {
         val content: String = File(path).readText(Charset.defaultCharset())
 
         run(content)
