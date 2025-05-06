@@ -100,13 +100,27 @@ object Lox {
         val scanner = Scanner(source)
         val tokens = scanner.scanTokens()
 
-        for (token in tokens) {
-            println(token)
-        }
+//        for (token in tokens) {
+//            println(token)
+//        }
+        val Parser = Parser(tokens)
+        val expression = Parser.parse()
+
+        if (hadError) return
+
+        println(AstPrinter().print(expression!!))
     }
 
     fun error(line: Int, message: String) {
         report(line, "", message)
+    }
+
+    fun error(token: Token, message: String) {
+        if(token.type == TokenType.EOF) {
+            report(token.line, " at end", message)
+        } else {
+            report(token.line, " at '${token.lexeme}'", message)
+        }
     }
 
     fun report(line: Int, where: String, message: String) {
