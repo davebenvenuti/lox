@@ -4,7 +4,10 @@ import java.nio.charset.Charset
 import java.io.File
 
 object Lox {
+    var interpreter = Interpreter()
+
     var hadError = false
+    var hadRuntimeError = false
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -94,6 +97,7 @@ object Lox {
         run(content)
 
         if (hadError) System.exit(65)
+        if (hadRuntimeError) System.exit(70)
     }
 
     private fun run(source: String) {
@@ -105,7 +109,7 @@ object Lox {
 
         if (hadError) return
 
-        println(AstPrinter().print(expression!!))
+        interpreter.interpret(expression)
     }
 
     fun error(line: Int, message: String) {
@@ -118,6 +122,12 @@ object Lox {
         } else {
             report(token.line, " at '${token.lexeme}'", message)
         }
+    }
+
+    fun runtimeError(error: RuntimeError) {
+        System.err.println("${error.message}\n[line ${error.token.line}]")
+
+        hadRuntimeError = true
     }
 
     fun report(line: Int, where: String, message: String) {
