@@ -18,6 +18,11 @@ object GenerateAst {
                                          "Literal  : Any? value",
                                          "Unary    : Token operator, Expr right",
                                      ))
+
+        defineAst(outputDir, "Stmt", listOf(
+                                         "Expression : Expr expression",
+                                         "Print      : Expr expression"
+                                     ))
     }
 
     private fun defineAst(outputDir: String, baseName: String, types: List<String>) {
