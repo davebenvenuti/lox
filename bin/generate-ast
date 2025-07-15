@@ -8,3 +8,7 @@ java -jar tool.jar lox/
 echo "Copying generated lox/Expr.kt to host..."
 
 cp lox/Expr.kt /mnt/host/src/lox/Expr.kt
+
+echo "Copying generated lox/Stmt.kt to host..."
+
+cp lox/Stmt.kt /mnt/host/src/lox/Stmt.kt

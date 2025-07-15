@@ -4,12 +4,23 @@ package com.craftinginterpreters.lox
 
 sealed class Expr {
     interface Visitor<R> {
+        fun visitAssignExpr(assign: Assign): R
         fun visitBinaryExpr(binary: Binary): R
         fun visitGroupingExpr(grouping: Grouping): R
         fun visitLiteralExpr(literal: Literal): R
         fun visitUnaryExpr(unary: Unary): R
+        fun visitVariableExpr(variable: Variable): R
     }
 
+    data class Assign(
+        val name : Token,
+        val value : Expr
+    ) : Expr() {
+        override fun <R> accept(visitor: Visitor<R>): R {
+            return visitor.visitAssignExpr(this)
+        }
+    }
+    
     data class Binary(
         val left : Expr,
         val operator : Token,
@@ -42,6 +53,14 @@ sealed class Expr {
     ) : Expr() {
         override fun <R> accept(visitor: Visitor<R>): R {
             return visitor.visitUnaryExpr(this)
+        }
+    }
+    
+    data class Variable(
+        val name : Token
+    ) : Expr() {
+        override fun <R> accept(visitor: Visitor<R>): R {
+            return visitor.visitVariableExpr(this)
         }
     }
     

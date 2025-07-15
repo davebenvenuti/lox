@@ -116,7 +116,7 @@ class Scanner(private val source: String) {
 
         advance() // This grabs the closing '"'
 
-        addToken(STRING, source.substring(start, current - 1))
+        addToken(STRING, source.substring(start + 1, current - 1))
     }
 
     private fun isDigit(c: Char): Boolean = c in '0'..'9'

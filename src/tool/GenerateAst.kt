@@ -13,10 +13,20 @@ object GenerateAst {
         val outputDir = args[0]
 
         defineAst(outputDir, "Expr", listOf(
+                                         "Assign   : Token name, Expr value",
                                          "Binary   : Expr left, Token operator, Expr right",
                                          "Grouping : Expr expression",
                                          "Literal  : Any? value",
                                          "Unary    : Token operator, Expr right",
+                                         "Variable : Token name",
+                                     ))
+
+        defineAst(outputDir, "Stmt", listOf(
+                                         "Block      : List<Stmt> statements",
+                                         "Expression : Expr expression",
+                                         "Print      : Expr expression",
+                                         // Couldn't use Var since that's a reserved word in Kotlin
+                                         "Var        : Token name, Expr initializer",
                                      ))
     }
 
@@ -49,7 +59,11 @@ object GenerateAst {
         val fields = fieldList.split(",").map { typeAndName ->
             val (type, name) = typeAndName.trim().split(" ", limit = 2)
 
-            "val $name : $type"
+            if(name == "var") {
+                "val v : $type"
+            } else {
+                "val $name : $type"
+            }
         }
 
         writer.println("""
@@ -68,9 +82,15 @@ object GenerateAst {
         writer.println("|interface Visitor<R> {".trimMargin().prependIndent("    "))
 
         types.map {
-            val name = it.split(":")[0].trim()
+            var varName = it.split(":")[0].trim().lowercase()
 
-            writer.println("        fun visit$name$baseName(${name.lowercase()}: $name): R")
+            if (varName == "var") {
+                varName = "v" // Avoid using 'var' as a variable name
+            }
+
+            var typeName = it.split(":")[0].trim()
+
+            writer.println("        fun visit$typeName$baseName($varName: $typeName): R")
         }
 
 

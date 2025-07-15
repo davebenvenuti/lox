@@ -104,12 +104,12 @@ object Lox {
         val scanner = Scanner(source)
         val tokens = scanner.scanTokens()
 
-        val Parser = Parser(tokens)
-        val expression = Parser.parse()
+        val parser = Parser(tokens)
+        val statements = parser.parse()
 
         if (hadError) return
 
-        interpreter.interpret(expression)
+        interpreter.interpret(statements)
     }
 
     fun error(line: Int, message: String) {
