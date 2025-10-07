@@ -1,0 +1,22 @@
+FROM gcc:latest AS builder
+
+WORKDIR /app
+
+# Copy source files
+COPY . .
+
+# Build the C project
+RUN gcc -o clox *.c -Wall -Wextra
+
+# Runtime stage
+FROM debian:bookworm-slim AS clox
+
+WORKDIR /app
+
+# Copy the compiled binary from builder
+COPY --from=builder /app/clox .
+
+# Mount point for host files
+VOLUME /mnt/host
+
+ENTRYPOINT ["./clox"]
